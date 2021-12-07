@@ -1,0 +1,16 @@
+input {
+  margin-top: 10px;
+  width: 100%;
+  padding: 8px;
+  box-sizing: border-box;
+}
+
+.box-input {
+  padding: 0 16px;
+}
+
+.input-search {
+  padding-left: 10px;
+  border: 1px solid #b3b3b3;
+  border-radius: 3px;
+}

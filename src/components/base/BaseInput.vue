@@ -1,12 +1,12 @@
 <template>
-  <div>
+  <div :class="label ? 'box-input box' : 'box-input'">
     <label v-if="label">{{ label }}
     </label>
     <input
       ref="input"
-      :title="title"
-      :value="value"
       :class="inputClass"
+      :value='modelValue'
+      @input='$emit("update:modelValue", $event.target.value)'
       v-bind="$attrs"
     />
   </div>
@@ -24,17 +24,11 @@ export default {
       type: String,
       default: "",
     },
-    value: {
-      type: [String, Number],
-      default: "",
-    },
-  },
-  data() {
-    return {
-      isActiveFocus: false,
-      isValid: false,
-      title: "",
-    };
+    modelValue: String,
   },
 };
 </script>
+
+<style>
+@import "../../assets/css/common/input.css";
+</style>

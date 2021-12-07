@@ -1,25 +1,25 @@
 <template>
-  <TodoList msg="Welcome to Your Vue.js App" />
+  <div id="app">
+    <router-view />
+  </div>
 </template>
 
 <script>
-import TodoList from "./components/TodoList.vue";
-
 export default {
   name: "App",
-  components: {
-    TodoList,
-  },
 };
 </script>
 
 <style>
+@import "../src/assets/css/common/index.css";
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
-  color: #1a1a1a;
-  margin-top: 60px;
+  color: #2c3e50;
+  height: calc(100vh - 32px);
+  width: 80%;
+  margin: 16px auto;
 }
 </style>

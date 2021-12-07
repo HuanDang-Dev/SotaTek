@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="box-btn">
     <!-- v-bind="$attrs"  sử dụng để kế thừa thuộc tính được thêm vào từ cha -->
     <button
       v-bind="$attrs"
@@ -22,3 +22,6 @@ export default {
 };
 </script>
 
+<style>
+@import "../../assets/css/common/button.css";
+</style>

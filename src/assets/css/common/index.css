@@ -1,0 +1,44 @@
+body {
+  margin: 0;
+  font-size: 13px;
+}
+
+h1,
+h2 {
+  margin: 0px;
+  font-size: 18px;
+}
+
+h5 {
+  margin-left: 32px;
+  font-size: 16px;
+  font-weight: 500;
+}
+
+ul {
+  padding: 0;
+  margin: 0;
+}
+
+li {
+  list-style: none;
+  cursor: pointer;
+}
+
+a {
+  text-decoration: none;
+  color: black;
+}
+
+.box {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-start;
+  margin-top: 16px;
+  padding: 0 16px;
+}
+
+.box label {
+  font-weight: 800;
+}
