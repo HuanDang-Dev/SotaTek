@@ -71,7 +71,7 @@ export default {
 
   mounted() {
     const me = this;
-    // Nếu là null hoặc undefined thì sẽ là chuỗi rỗng
+
     if (localStorage.TodoList) {
       const storageTodoList = JSON.parse(localStorage.TodoList);
 

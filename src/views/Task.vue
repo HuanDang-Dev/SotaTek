@@ -88,9 +88,21 @@ export default {
   methods: {
     handleAddTask() {
       if (!this.newTask.title || !this.newTask.dueDate) {
+        alert("Tiêu đề không được để trống.");
         return false;
       }
 
+      // Xác định thời gian trong tương lai
+      const nowDay = new Date();
+      const chooseDate = new Date(this.date);
+
+      if (!chooseDate - nowDay) {
+        console.log("ok");
+        alert("Không được chọn ngày trong quá khứ.");
+        return false;
+      }
+
+      // Thêm các trường còn thiếu
       this.newTask.priority = this.selected;
 
       this.$emit("onSubmit", this.newTask);
