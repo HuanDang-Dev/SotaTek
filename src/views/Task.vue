@@ -1,6 +1,6 @@
 <template>
   <div class="task">
-    <div id="add-task">
+    <div>
       <BaseInput
         inputClass="input-search"
         :placeholder="!newTask.title ? 'Add new task ...' : newTask.title"
@@ -17,11 +17,17 @@
         />
       </div>
       <div class="box-priority">
-        <BaseInput
-          label="Due Date"
-          inputClass="input-date"
-          type="date"
-        ></BaseInput>
+        <div class="box-date">
+          <div class="due-date">
+            <div class="date-text">{{ showDate || date || this.formatDate(new Date())}}</div>
+          </div>
+          <BaseInput
+            label="Due Date"
+            inputClass="input-date"
+            type="date"
+            v-model="date"
+          ></BaseInput>
+        </div>
         <div class="box box-select">
           <label>Priority</label>
           <select v-model="selected">
@@ -46,7 +52,7 @@ import BaseButton from "@/components/base/BaseButton.vue";
 import BaseInput from "@/components/base/BaseInput.vue";
 
 export default {
-  name: "NewTask",
+  name: "Task",
   props: {
     task: Object,
   },
@@ -60,6 +66,8 @@ export default {
       selected: "Low",
       priority: ["Low", "Normal", "High"],
       newTask: { ...this.task },
+      date: "",
+      showDate: "",
     };
   },
 
@@ -67,11 +75,19 @@ export default {
     if (this.newTask.priority) {
       this.selected = this.newTask.priority;
     }
+    this.showDate = this.formatDate(this.newTask.dueDate);
+  },
+
+  watch: {
+    date() {
+      this.newTask.dueDate = this.date;
+      this.showDate = this.formatDate(this.date);
+    },
   },
 
   methods: {
     handleAddTask() {
-      if (!this.newTask.title) {
+      if (!this.newTask.title || !this.newTask.dueDate) {
         return false;
       }
 
@@ -79,19 +95,58 @@ export default {
 
       this.$emit("onSubmit", this.newTask);
 
-      const jsonTask = JSON.stringify([].concat(this.newTask));
+      if (!this.newTask.btn === "update") {
+        // Lưu dữ liệu vào localStorage
+        const jsonTask = JSON.stringify([].concat(this.newTask));
 
-      if (!localStorage.TodoList) {
-        localStorage.setItem("TodoList", jsonTask);
-      } else {
-        const storageTodoList = JSON.parse(localStorage.TodoList);
-        storageTodoList.push(this.newTask);
-        localStorage.setItem("TodoList", JSON.stringify(storageTodoList));
+        if (!localStorage.TodoList) {
+          localStorage.setItem("TodoList", jsonTask);
+        } else {
+          const storageTodoList = JSON.parse(localStorage.TodoList);
+          storageTodoList.push(this.newTask);
+          localStorage.setItem("TodoList", JSON.stringify(storageTodoList));
+        }
       }
 
+      // Đưa về giá trị mặc định
       this.newTask = {};
+      this.showDate = "";
+      this.date = "";
+      this.selected = "Low";
 
       alert("Thêm task thành công");
+    },
+
+    formatDate(date) {
+      if (!date) {
+        return "";
+      }
+      var dateTime = new Date(date);
+      if (Number.isNaN(dateTime.getTime())) {
+        return "";
+      } else {
+        var month = new Array();
+        month[0] = "Jan";
+        month[1] = "Feb";
+        month[2] = "Mar";
+        month[3] = "Apr";
+        month[4] = "May";
+        month[5] = "Jun";
+        month[6] = "Jul";
+        month[7] = "Aug";
+        month[8] = "Sept";
+        month[9] = "Oct";
+        month[10] = "Nov";
+        month[11] = "Dec";
+
+        return (
+          dateTime.getDate() +
+          " " +
+          month[dateTime.getMonth()] +
+          " " +
+          dateTime.getFullYear()
+        );
+      }
     },
   },
 };
@@ -104,14 +159,7 @@ export default {
 
 .box-select select {
   width: 100%;
-  padding: 8px;
-  margin-top: 10px;
-  box-sizing: border-box;
-}
-
-.box-select option {
-  width: 100%;
-  padding: 8px;
+  padding: 9px;
   margin-top: 10px;
   box-sizing: border-box;
 }
@@ -133,6 +181,23 @@ export default {
 }
 
 .box-priority .box-input {
+}
+
+.box-date {
+  position: relative;
   width: 50%;
+}
+
+.due-date {
+  position: absolute;
+  top: 45px;
+  left: 17px;
+  right: 56px;
+  background: #fff;
+  height: 38px;
+  border-right: 1px solid;
+  display: flex;
+  align-items: center;
+  padding-left: 12px;
 }
 </style>

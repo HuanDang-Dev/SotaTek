@@ -9,7 +9,7 @@
       @keydown.enter="handleSearch"
     ></BaseInput>
     <div class="table">
-      <div :class="dataList.length > 6 ? 'table-list scroll' : 'table-list'">
+      <div class="table-list">
         <TodoItem
           v-for="(item, index) in dataList"
           :key="index"
@@ -60,10 +60,12 @@ export default {
           title: "Do my homework",
           des: "description ok",
           priority: "Normal",
+          dueDate: "2000-04-29",
           btn: "Update",
         },
       ],
       dataList: [],
+      height: 0,
     };
   },
 
@@ -93,12 +95,17 @@ export default {
         id: this.listTodo.length,
         check: false,
         btn: "Update",
+        dueDate: "",
         ...this.addTask,
       };
 
       this.listTodo.push(newTask);
 
       this.handleSearch();
+    },
+
+    dataList() {
+      this.sortList();
     },
   },
 
@@ -155,6 +162,16 @@ export default {
     updateData(data, index) {
       this.dataList[index] = data;
       this.listTodo[this.dataList[index].id] = data;
+      this.sortList();
+    },
+
+    sortList() {
+      this.listTodo = this.listTodo.sort((a, b) => {
+        const big = new Date(a.dueDate);
+        const small = new Date(b.dueDate);
+
+        return big - small;
+      });
     },
   },
 };
@@ -172,28 +189,23 @@ export default {
 .table {
   position: relative;
   width: 100%;
-  height: calc(100% - 200px);
+  min-height: 700px;
 }
 
 .table-list {
-  position: absolute;
   background-color: #fff;
   margin-top: 16px;
   top: 0;
   left: 0;
   right: 0;
   bottom: 0;
-}
-
-/* Nếu danh sách trên 6 phần tử thì sẽ mở ra bảng cuộn*/
-.scroll {
-  overflow: scroll;
+  margin-bottom: 16px;
 }
 
 .box-bulk {
   display: flex;
   flex-direction: row;
-  justify-content: flex-start;
+  justify-content: space-between;
   align-items: center;
   height: 80px;
   border-top: 1px solid;
@@ -208,11 +220,22 @@ export default {
   display: flex;
   justify-content: center;
   align-items: center;
-  position: absolute;
-  right: 0;
 }
 
 .box-btn {
   margin-left: 0px;
+}
+
+@media only screen and (max-width: 456px) {
+  /* For mobile phones: */
+  .box-bulk {
+    flex-direction: column;
+    justify-content: center;
+    height: 120px;
+  }
+
+  .box-bulk h5 {
+    margin: 0 16px 16px;
+  }
 }
 </style>

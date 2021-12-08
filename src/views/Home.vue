@@ -39,32 +39,50 @@ export default {
   height: 100%;
   width: 100%;
   border: 1px solid #000;
+  width: 80%;
+  margin: 16px auto;
 }
 
 .new-task {
-  width: 40%;
+  width: 41.66%;
   padding: 16px;
   border-right: 1px solid #000;
 }
 
 .list {
-  width: 60%;
+  width: 58.33%;
   padding: 16px;
   position: relative;
+  padding-bottom: 80px;
 }
 
-h3 {
-  margin: 40px 0 0;
+.new-task .task {
+  margin-top: 32px;
 }
-ul {
-  list-style-type: none;
-  padding: 0;
+
+@media only screen and (max-width: 1080px) {
+  /* For mobile phones: */
+  .home {
+    width: 100%;
+  }
 }
-li {
-  display: inline-block;
-  margin: 0 10px;
-}
-a {
-  color: #42b983;
+
+@media only screen and (max-width: 768px) {
+  /* For mobile phones: */
+  .home {
+    flex-direction: column;
+  }
+
+  .new-task {
+    width: 100%;
+    border-right: none;
+    border-bottom: 1px solid #000;
+    padding: 16px 0 32px 0;
+  }
+
+  .list {
+    width: 100%;
+    padding: 16px 0 120px 0;
+  }
 }
 </style>
