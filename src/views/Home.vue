@@ -2,10 +2,10 @@
   <div class="home">
     <div class="new-task">
       <h2>New Task</h2>
-      <Task></Task>
+      <Task @onSubmit="addTask($event)"></Task>
     </div>
     <div class="list">
-      <TodoList></TodoList>
+      <TodoList :addTask="newTodo"></TodoList>
     </div>
   </div>
 </template>
@@ -18,6 +18,16 @@ export default {
   components: {
     Task,
     TodoList,
+  },
+  data() {
+    return {
+      newTodo: {},
+    };
+  },
+  methods: {
+    addTask(data) {
+      this.newTodo = data;
+    },
   },
 };
 </script>

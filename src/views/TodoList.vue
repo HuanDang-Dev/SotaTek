@@ -15,6 +15,7 @@
           :key="index"
           :todoItem="item"
           @update="updateData($event, index)"
+          @removeItem="removeItem($event)"
         ></TodoItem>
       </div>
     </div>
@@ -40,6 +41,9 @@ import TodoItem from "@/components/TodoItem.vue";
 import BaseInput from "@/components/base/BaseInput.vue";
 export default {
   name: "TodoList",
+  props: {
+    addTask: Object,
+  },
   components: {
     TodoItem,
     BaseInput,
@@ -52,55 +56,50 @@ export default {
       listTodo: [
         {
           id: 0,
-          check: true,
+          check: false,
           title: "Do my homework",
           des: "description ok",
           priority: "Normal",
           btn: "Update",
         },
-        {
-          id: 1,
-          check: true,
-          title: "huan",
-          des: "",
-          priority: "Low",
-          btn: "Update",
-        },
-        {
-          id: 2,
-          check: false,
-          title: "cham",
-          des: "",
-          priority: "High",
-          btn: "Update",
-        },
-        {
-          id: 3,
-          check: false,
-          title: "cham",
-          des: "",
-          priority: "High",
-          btn: "Update",
-        },
-        {
-          id: 4,
-          check: false,
-          title: "cham",
-          des: "",
-          priority: "High",
-          btn: "Update",
-        },
-        {
-          id: 5,
-          check: false,
-          title: "cham",
-          des: "",
-          priority: "High",
-          btn: "Update",
-        },
       ],
       dataList: [],
     };
+  },
+
+  mounted() {
+    const me = this;
+    // Nếu là null hoặc undefined thì sẽ là chuỗi rỗng
+    if (localStorage.TodoList) {
+      const storageTodoList = JSON.parse(localStorage.TodoList);
+
+      const count = storageTodoList.map(function (db, index) {
+        return {
+          id: me.listTodo.length + index,
+          check: false,
+          btn: "Update",
+          ...db,
+        };
+      });
+
+      me.listTodo = [...me.listTodo, ...count];
+    }
+    me.handleSearch();
+  },
+
+  watch: {
+    addTask() {
+      const newTask = {
+        id: this.listTodo.length,
+        check: false,
+        btn: "Update",
+        ...this.addTask,
+      };
+
+      this.listTodo.push(newTask);
+
+      this.handleSearch();
+    },
   },
 
   computed: {
@@ -109,6 +108,7 @@ export default {
         return db.check == true;
       });
 
+      // Nếu có nhiều hơn 1 ô được tích thì sẽ hiện bảng bulk action
       if (count.length >= 2) {
         return true;
       }
@@ -117,14 +117,30 @@ export default {
     },
   },
 
-  mounted() {
-    this.handleSearch();
-  },
-
   methods: {
-    submit() {},
+    removeItem(id) {
+      if (confirm("Bạn muốn xóa hành động này!")) {
+        let count = this.listTodo.filter(function (db) {
+          return db.id !== id;
+        });
 
-    remove() {},
+        this.listTodo = count;
+
+        this.handleSearch();
+      }
+    },
+
+    remove() {
+      if (confirm("Bạn muốn xóa tất cả hành động đã chọn!")) {
+        const count = this.dataList.filter(function (db) {
+          return db.check !== true;
+        });
+
+        this.listTodo = count;
+
+        this.handleSearch();
+      }
+    },
 
     handleSearch() {
       var me = this;

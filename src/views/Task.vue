@@ -1,9 +1,6 @@
 <template>
   <div class="task">
-    <form
-      action="#"
-      id="add-task"
-    >
+    <div id="add-task">
       <BaseInput
         inputClass="input-search"
         :placeholder="!newTask.title ? 'Add new task ...' : newTask.title"
@@ -27,21 +24,20 @@
         ></BaseInput>
         <div class="box box-select">
           <label>Priority</label>
-          <select id="priority">
+          <select v-model="selected">
             <option
               v-for="(value, index) in priority"
               :key="index"
               :value="value"
-              :selected="value === newTask.priority ? true : false"
             >{{ value }}</option>
           </select>
         </div>
       </div>
       <BaseButton
-        @click="submit"
+        @click="handleAddTask"
         buttonClass="btn btn-green"
       >{{ !newTask.btn ? 'Add' : newTask.btn }}</BaseButton>
-    </form>
+    </div>
   </div>
 </template>
 
@@ -58,16 +54,45 @@ export default {
     BaseButton,
     BaseInput,
   },
+
   data() {
     return {
+      selected: "Low",
       priority: ["Low", "Normal", "High"],
-      newTask: {
-        ...this.task,
-      },
+      newTask: { ...this.task },
     };
   },
+
+  mounted() {
+    if (this.newTask.priority) {
+      this.selected = this.newTask.priority;
+    }
+  },
+
   methods: {
-    submit() {},
+    handleAddTask() {
+      if (!this.newTask.title) {
+        return false;
+      }
+
+      this.newTask.priority = this.selected;
+
+      this.$emit("onSubmit", this.newTask);
+
+      const jsonTask = JSON.stringify([].concat(this.newTask));
+
+      if (!localStorage.TodoList) {
+        localStorage.setItem("TodoList", jsonTask);
+      } else {
+        const storageTodoList = JSON.parse(localStorage.TodoList);
+        storageTodoList.push(this.newTask);
+        localStorage.setItem("TodoList", JSON.stringify(storageTodoList));
+      }
+
+      this.newTask = {};
+
+      alert("Thêm task thành công");
+    },
   },
 };
 </script>
@@ -105,5 +130,9 @@ export default {
 
 .box-priority {
   display: flex;
+}
+
+.box-priority .box-input {
+  width: 50%;
 }
 </style>

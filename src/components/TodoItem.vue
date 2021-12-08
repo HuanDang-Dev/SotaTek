@@ -27,7 +27,10 @@
       class="detail-item"
       v-if="isDetail"
     >
-      <Task :task="dataUpdate"></Task>
+      <Task
+        :task="dataUpdate"
+        @onSubmit="handleUpdate($event)"
+      ></Task>
     </div>
   </div>
 </template>
@@ -69,7 +72,14 @@ export default {
     detail() {
       this.isDetail = !this.isDetail;
     },
-    remove() {},
+    remove() {
+      this.isDetail = false;
+      this.$emit("removeItem", this.dataUpdate.id);
+    },
+    handleUpdate(data) {
+      this.isDetail = false;
+      this.dataUpdate = data;
+    },
   },
 };
 </script>
