@@ -91,7 +91,7 @@ export default {
 
       this.listTodo.push(newTask);
 
-      this.handleSearch();
+      this.sortList();
     },
 
     listTodo() {
