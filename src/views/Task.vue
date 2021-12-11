@@ -40,7 +40,7 @@
         </div>
       </div>
       <BaseButton
-        @click="handleAddTask"
+        @click="handleBtnTask"
         buttonClass="btn btn-green"
       >{{ !newTask.btn ? 'Add' : newTask.btn }}</BaseButton>
     </div>
@@ -86,18 +86,17 @@ export default {
   },
 
   methods: {
-    handleAddTask() {
-      if (!this.newTask.title || !this.newTask.dueDate) {
+    handleBtnTask() {
+      if (!this.newTask.title) {
         alert("Tiêu đề không được để trống.");
         return false;
       }
 
       // Xác định thời gian trong tương lai
       const nowDay = new Date();
-      const chooseDate = new Date(this.date);
+      const chooseDate = new Date(this.newTask.dueDate);
 
-      if (!chooseDate - nowDay) {
-        console.log("ok");
+      if (!(chooseDate - nowDay)) {
         alert("Không được chọn ngày trong quá khứ.");
         return false;
       }
@@ -107,17 +106,36 @@ export default {
 
       this.$emit("onSubmit", this.newTask);
 
-      if (!this.newTask.btn === "update") {
-        // Lưu dữ liệu vào localStorage
-        const jsonTask = JSON.stringify([].concat(this.newTask));
+      if (this.newTask.btn === "Update") {
+        const storageTodoList = JSON.parse(localStorage.TodoList);
 
+        // Xóa bỏ phần tử update trong mảng
+        const newList = storageTodoList.filter((todo) => {
+          return todo.id !== this.newTask.id;
+        });
+        newList.push(this.newTask);
+        localStorage.setItem("TodoList", JSON.stringify(newList));
+
+        alert("Update task thành công");
+      } else {
+        // Lưu dữ liệu vào localStorage
         if (!localStorage.TodoList) {
+          // Thêm Id cho phần tử đầu tiên
+          this.newTask.id = 0;
+
+          const jsonTask = JSON.stringify([].concat(this.newTask));
           localStorage.setItem("TodoList", jsonTask);
         } else {
           const storageTodoList = JSON.parse(localStorage.TodoList);
+
+          // Thêm Id
+          this.newTask.id = storageTodoList.length;
+
           storageTodoList.push(this.newTask);
           localStorage.setItem("TodoList", JSON.stringify(storageTodoList));
         }
+
+        alert("Thêm task thành công");
       }
 
       // Đưa về giá trị mặc định
@@ -125,8 +143,6 @@ export default {
       this.showDate = "";
       this.date = "";
       this.selected = "Low";
-
-      alert("Thêm task thành công");
     },
 
     formatDate(date) {

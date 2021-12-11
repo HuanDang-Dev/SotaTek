@@ -14,8 +14,9 @@
           v-for="(item, index) in dataList"
           :key="index"
           :todoItem="item"
-          @update="updateData($event, index)"
+          @update="updateData($event)"
           @removeItem="removeItem($event)"
+          @onSortingList="handleSortingList($event)"
         ></TodoItem>
       </div>
     </div>
@@ -53,17 +54,7 @@ export default {
   data() {
     return {
       searchValue: "",
-      listTodo: [
-        {
-          id: 0,
-          check: false,
-          title: "Do my homework",
-          des: "description ok",
-          priority: "Normal",
-          dueDate: "2000-04-29",
-          btn: "Update",
-        },
-      ],
+      listTodo: [],
       dataList: [],
       height: 0,
     };
@@ -75,16 +66,15 @@ export default {
     if (localStorage.TodoList) {
       const storageTodoList = JSON.parse(localStorage.TodoList);
 
-      const count = storageTodoList.map(function (db, index) {
+      const storageFormat = storageTodoList.map(function (db) {
         return {
-          id: me.listTodo.length + index,
           check: false,
           btn: "Update",
           ...db,
         };
       });
 
-      me.listTodo = [...me.listTodo, ...count];
+      me.listTodo = [...me.listTodo, ...storageFormat];
     }
     me.handleSearch();
   },
@@ -104,7 +94,7 @@ export default {
       this.handleSearch();
     },
 
-    dataList() {
+    listTodo() {
       this.sortList();
     },
   },
@@ -159,9 +149,18 @@ export default {
       });
     },
 
-    updateData(data, index) {
-      this.dataList[index] = data;
-      this.listTodo[this.dataList[index].id] = data;
+    updateData(id) {
+      const todoCheck = this.listTodo.find((element) => element.id === id);
+
+      todoCheck.check = !todoCheck.check;
+    },
+
+    handleSortingList(data) {
+      const newList = this.listTodo.filter((todo) => {
+        return todo.id !== data.id;
+      });
+      newList.push(data);
+      this.listTodo = newList;
       this.sortList();
     },
 
@@ -172,6 +171,7 @@ export default {
 
         return big - small;
       });
+      this.handleSearch();
     },
   },
 };

@@ -31,7 +31,8 @@
     >
       <Task
         :task="dataUpdate"
-        @onSubmit="handleUpdate($event)"
+        @onSubmit="handleSubmit($event)"
+        @onSorting="handleSorting"
       ></Task>
     </div>
   </div>
@@ -69,7 +70,7 @@ export default {
   methods: {
     handleCheckbox() {
       this.dataUpdate.check = !this.dataUpdate.check;
-      this.$emit("update", this.dataUpdate);
+      this.$emit("update", this.dataUpdate.id);
     },
     detail() {
       this.isDetail = !this.isDetail;
@@ -78,10 +79,12 @@ export default {
       this.isDetail = false;
       this.$emit("removeItem", this.dataUpdate.id);
     },
-    handleUpdate(data) {
+    handleSubmit(data) {
       this.isDetail = false;
       this.dataUpdate = data;
+      this.$emit("onSortingList", this.dataUpdate);
     },
+    handleSorting() {},
   },
 };
 </script>
